@@ -14,12 +14,16 @@ import {
   Button as MuiButton,
   List,
   ListItem,
+  ListItemButton,
   ListItemAvatar,
   ListItemText,
   Paper,
   alpha,
   useTheme as useMuiTheme,
-  LinearProgress
+  LinearProgress,
+  Divider,
+  AppBar,
+  Toolbar
 } from '@mui/material';
 import {
   CalendarMonth,
@@ -137,14 +141,14 @@ export const Dashboard = () => {
         </Paper>
 
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid size={{ xs: 6 }}>
             <StatCard icon={<Visibility />} label="À vérifier" value="7" trend="+2 new" />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={{ xs: 6 }}>
             <StatCard icon={<CheckCircle />} label="Validés" value="24" trend="+84%" />
           </Grid>
           
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <MuiCard sx={{ p: 4, borderRadius: 6 }}>
               <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', mb: 2 }}>
                 Tendances des paiements
@@ -185,18 +189,18 @@ export const Dashboard = () => {
                   disablePadding 
                   sx={{ bgcolor: 'background.paper', borderRadius: 4, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}
                 >
-                  <MuiButton fullWidth sx={{ p: 2, justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary' }} onClick={() => navigate(`/merchant/reviews/${p.id}`)}>
+                  <ListItemButton sx={{ p: 2, alignItems: 'center', gap: 1 }} onClick={() => navigate(`/merchant/reviews/${p.id}`)}>
                     <ListItemAvatar>
                       <Avatar variant="rounded" src={bankLogo} sx={{ width: 48, height: 48, bgcolor: 'background.default', border: '1px solid', borderColor: 'divider', p: 1 }}>
                         <AccountBalance />
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={<Typography sx={{ fontWeight: 800, fontSize: '1.125rem' }}>{p.amount} {p.currency}</Typography>}
+                      primary={<Typography variant="body1" sx={{ fontWeight: 800, fontSize: '1.125rem' }}>{p.amount} {p.currency}</Typography>}
                       secondary={<Typography variant="caption" color="text.secondary">{p.bank} • {p.time}</Typography>}
                     />
                     <ArrowForwardIos sx={{ fontSize: 14, opacity: 0.3 }} />
-                  </MuiButton>
+                  </ListItemButton>
                 </ListItem>
               );
             })}
@@ -223,29 +227,51 @@ export const ReceivingMethods = ({ onBack }: { onBack?: () => void }) => {
       </Box>
 
       <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <MuiButton
-            fullWidth
-            variant="outlined"
-            sx={{ flexDirection: 'column', py: 3, gap: 1, borderRadius: 6, borderStyle: 'dashed' }}
+        <Grid size={{ xs: 6 }}>
+          <Box
+            component="div"
+            sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              py: 3, 
+              gap: 1, 
+              borderRadius: 6, 
+              border: '2px dashed', 
+              borderColor: 'divider',
+              cursor: 'pointer',
+              bgcolor: alpha(muiTheme.palette.primary.main, 0.02),
+              '&:hover': { bgcolor: alpha(muiTheme.palette.primary.main, 0.05) }
+            }}
           >
             <Avatar sx={{ bgcolor: alpha(muiTheme.palette.primary.main, 0.1), color: 'primary.main' }}>
               <CreditCard />
             </Avatar>
             <Typography variant="caption" sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Ajouter Carte</Typography>
-          </MuiButton>
+          </Box>
         </Grid>
-        <Grid item xs={6}>
-          <MuiButton
-            fullWidth
-            variant="outlined"
-            sx={{ flexDirection: 'column', py: 3, gap: 1, borderRadius: 6, borderStyle: 'dashed' }}
+        <Grid size={{ xs: 6 }}>
+          <Box
+            component="div"
+            sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              py: 3, 
+              gap: 1, 
+              borderRadius: 6, 
+              border: '2px dashed', 
+              borderColor: 'divider',
+              cursor: 'pointer',
+              bgcolor: alpha(muiTheme.palette.primary.main, 0.02),
+              '&:hover': { bgcolor: alpha(muiTheme.palette.primary.main, 0.05) }
+            }}
           >
             <Avatar sx={{ bgcolor: alpha(muiTheme.palette.primary.main, 0.1), color: 'primary.main' }}>
               <PhoneIphone />
             </Avatar>
             <Typography variant="caption" sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Ajouter Mobile</Typography>
-          </MuiButton>
+          </Box>
         </Grid>
       </Grid>
 
@@ -307,5 +333,3 @@ export const ReceivingMethods = ({ onBack }: { onBack?: () => void }) => {
 
   return <DashboardShell activeTab="more">{content}</DashboardShell>;
 };
-
-import { Divider } from '@mui/material';

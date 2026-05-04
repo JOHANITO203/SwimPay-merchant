@@ -13,6 +13,7 @@ import {
   Button as MuiButton,
   List,
   ListItem,
+  ListItemButton,
   ListItemAvatar,
   ListItemText,
   Paper,
@@ -69,13 +70,15 @@ export const OrdersList = () => {
             fullWidth
             placeholder="ID, Client, Montant..."
             size="small"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search sx={{ color: 'text.secondary', fontSize: 20 }} />
-                </InputAdornment>
-              ),
-              sx: { borderRadius: 4, bgcolor: 'background.paper' }
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search sx={{ color: 'text.secondary', fontSize: 20 }} />
+                  </InputAdornment>
+                ),
+                sx: { borderRadius: 4, bgcolor: 'background.paper' }
+              }
             }}
           />
           <IconButton sx={{ bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 3 }}>
@@ -90,13 +93,17 @@ export const OrdersList = () => {
               disablePadding 
               sx={{ bgcolor: 'background.paper', borderRadius: 4, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}
             >
-              <MuiButton fullWidth sx={{ p: 2, justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary' }}>
+              <ListItemButton sx={{ p: 2, alignItems: 'center', gap: 1 }}>
                 <ListItemAvatar>
                   <Avatar variant="rounded" sx={{ width: 56, height: 56, bgcolor: alpha(muiTheme.palette.primary.main, 0.05), color: 'primary.main' }}>
                     <ShoppingCart />
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
+                  slotProps={{
+                    primary: { component: 'div' },
+                    secondary: { component: 'div' }
+                  }}
                   primary={
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Typography sx={{ fontWeight: 800, fontSize: '1.05rem', letterSpacing: '-0.02em' }}>{o.id}</Typography>
@@ -122,7 +129,7 @@ export const OrdersList = () => {
                     </Box>
                   }
                 />
-              </MuiButton>
+              </ListItemButton>
             </ListItem>
           ))}
         </List>
@@ -161,7 +168,14 @@ export const ConnectedSite = ({ onBack }: { onBack?: () => void }) => {
         <Box>
           <Typography variant="caption" sx={{ opacity: 0.6, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Webhook URL</Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, p: 2, bgcolor: alpha('#fff', 0.05), borderRadius: 2, border: '1px solid', borderColor: alpha('#fff', 0.1) }}>
-             <Typography sx={{ flex: 1, fontSize: '0.75rem', fontFamily: 'monospace', truncate: true }}>https://api.business.com/v1/swimpay/</Typography>
+             <Typography sx={{ 
+                flex: 1, 
+                fontSize: '0.75rem', 
+                fontFamily: 'monospace',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              }}>https://api.business.com/v1/swimpay/</Typography>
              <IconButton size="small" sx={{ color: 'white', opacity: 0.7 }}><VpnKey sx={{ fontSize: 16 }} /></IconButton>
           </Box>
         </Box>
@@ -315,9 +329,8 @@ const SettingsSection = ({ title, items, onNavigate }: any) => {
               <ListItem 
                 disablePadding
               >
-                <MuiButton
-                  fullWidth
-                  sx={{ p: 2.5, justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', gap: 2.5 }}
+                <ListItemButton
+                  sx={{ p: 2.5, justifyContent: 'flex-start', color: 'text.primary', gap: 2.5 }}
                   onClick={() => onNavigate(item.path)}
                 >
                   <Avatar variant="rounded" sx={{ width: 44, height: 44, bgcolor: alpha(muiTheme.palette.text.secondary, 0.05), color: 'text.secondary' }}>
@@ -325,7 +338,7 @@ const SettingsSection = ({ title, items, onNavigate }: any) => {
                   </Avatar>
                   <Typography sx={{ flex: 1, fontWeight: 700 }}>{item.label}</Typography>
                   <ChevronRight sx={{ opacity: 0.2 }} />
-                </MuiButton>
+                </ListItemButton>
               </ListItem>
               {i < items.length - 1 && <Divider />}
             </Box>

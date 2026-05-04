@@ -11,6 +11,7 @@ import {
   Button as MuiButton,
   List,
   ListItem,
+  ListItemButton,
   ListItemAvatar,
   ListItemText,
   Paper,
@@ -252,8 +253,8 @@ export const HelpSupport = ({ onBack }: { onBack: () => void }) => {
             { label: 'Latence Réseau', icon: Storage, desc: 'État des passerelles.' },
             { label: 'Historique Tickets', icon: Send, desc: 'Vos demandes.' },
           ].map((item, i) => (
-            <MuiCard key={i} sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider' }} elevation={0}>
-               <MuiButton fullWidth sx={{ p: 2.5, justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', gap: 2.5 }}>
+            <ListItem key={i} disablePadding>
+               <ListItemButton sx={{ p: 2.5, justifyContent: 'flex-start', color: 'text.primary', gap: 2.5 }}>
                   <Avatar sx={{ bgcolor: alpha(muiTheme.palette.primary.main, 0.05), color: 'primary.main' }}>
                     <item.icon />
                   </Avatar>
@@ -262,8 +263,8 @@ export const HelpSupport = ({ onBack }: { onBack: () => void }) => {
                     <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>{item.desc}</Typography>
                   </Box>
                   <ChevronRight sx={{ opacity: 0.2 }} />
-               </MuiButton>
-            </MuiCard>
+               </ListItemButton>
+            </ListItem>
           ))}
         </Box>
 
@@ -292,14 +293,9 @@ export const Conditions = ({ onBack }: { onBack: () => void }) => {
         </Box>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-           {[
-             'Conditions Générales',
-             'Politique de Confidentialité',
-             'Traitement des Données',
-             'Mentions Légales'
-           ].map((label, i) => (
-             <MuiCard key={i} sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider' }} elevation={0}>
-                <MuiButton fullWidth sx={{ p: 3, justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', gap: 3 }}>
+           {['Conditions Générales', 'Politique de Confidentialité', 'Traitement des Données', 'Mentions Légales'].map((label, i) => (
+             <ListItem key={i} disablePadding sx={{ borderBottom: i < 3 ? '1px solid' : 'none', borderColor: 'divider' }}>
+                <ListItemButton sx={{ p: 3, justifyContent: 'flex-start', color: 'text.primary', gap: 3 }}>
                    <Avatar variant="rounded" sx={{ bgcolor: alpha(muiTheme.palette.text.secondary, 0.05), color: 'text.secondary' }}>
                       <Article />
                    </Avatar>
@@ -308,8 +304,8 @@ export const Conditions = ({ onBack }: { onBack: () => void }) => {
                       <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>PDF • 2.4 MB</Typography>
                    </Box>
                    <ChevronRight sx={{ opacity: 0.2 }} />
-                </MuiButton>
-             </MuiCard>
+                </ListItemButton>
+             </ListItem>
            ))}
         </Box>
 

@@ -13,6 +13,7 @@ import {
   Button as MuiButton,
   List,
   ListItem,
+  ListItemButton,
   ListItemAvatar,
   ListItemText,
   Paper,
@@ -102,10 +103,9 @@ export const ReviewPayments = () => {
                 disablePadding 
                 sx={{ bgcolor: 'background.paper', borderRadius: 4, border: '1px solid', borderColor: 'divider', overflow: 'hidden' }}
               >
-                <MuiButton 
-                  fullWidth 
+                <ListItemButton 
                   onClick={() => setSelectedPayment(p.id)}
-                  sx={{ p: 3, flexDirection: 'column', alignItems: 'stretch', textTransform: 'none', color: 'text.primary' }}
+                  sx={{ p: 3, flexDirection: 'column', alignItems: 'stretch', color: 'text.primary' }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                     <Avatar variant="rounded" src={bankLogo} sx={{ width: 48, height: 48, bgcolor: 'background.default', border: '1px solid', borderColor: 'divider', p: 1 }}>
@@ -145,7 +145,7 @@ export const ReviewPayments = () => {
                     </Box>
                     <ArrowForwardIos sx={{ fontSize: 12, opacity: 0.2 }} />
                   </Box>
-                </MuiButton>
+                </ListItemButton>
               </ListItem>
              );
           })}
@@ -221,6 +221,10 @@ export const PaymentDetail = ({ pId = 'p1', onBack }: { pId?: string, onBack: ()
                        {item.icon}
                     </Avatar>
                     <ListItemText 
+                      slotProps={{
+                        primary: { component: 'div' },
+                        secondary: { component: 'div' }
+                      }}
                       primary={<Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700 }}>{item.label}</Typography>}
                       secondary={<Typography sx={{ fontWeight: 700, color: 'text.primary', fontSize: '0.875rem' }}>{item.value}</Typography>}
                     />

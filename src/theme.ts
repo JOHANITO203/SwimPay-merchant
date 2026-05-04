@@ -67,9 +67,6 @@ const googleThemeOptions: ThemeOptions = {
             boxShadow: '0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15)',
           },
         },
-        containedPrimary: {
-          backgroundColor: '#0b57d0',
-        },
       },
     },
     MuiCard: {
