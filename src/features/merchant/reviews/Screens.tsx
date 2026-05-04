@@ -1,7 +1,7 @@
 import { DashboardShell } from '../DashboardShell';
 import { Card, StatusChip, Button, Logo, MobileShell } from '@/src/ui/components/Base';
 import { LayoutGrid, Clock, CheckCircle2, XCircle, Search, ChevronRight, AlertCircle, Eye, Info, ShieldCheck, Fingerprint, Banknote, Terminal } from 'lucide-react';
-import { MOCK_PAYMENTS } from '@/src/mock';
+import { MOCK_PAYMENTS, MOCK_BANKS } from '@/src/mock';
 import { useState } from 'react';
 
 export const ReviewPayments = () => {
@@ -42,39 +42,46 @@ export const ReviewPayments = () => {
         </div>
 
         <div className="flex flex-col gap-4">
-          {MOCK_PAYMENTS.map((p) => (
-             <Card key={p.id} onClick={() => setSelectedPayment(p.id)} className="flex flex-col gap-5 p-6 group">
-                <div className="flex items-center gap-4">
-                   <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center group-hover:bg-brand-light dark:group-hover:bg-brand-deep/20 transition-colors">
-                      <div className="w-10 h-10 rounded-xl bg-brand-deep dark:bg-brand-cyan flex items-center justify-center text-brand-cyan dark:text-brand-deep text-lg font-black">
-                         {p.bank[0]}
-                      </div>
-                   </div>
-                   <div className="flex-1">
-                      <div className="flex items-center justify-between mb-0.5">
-                         <span className="text-xl font-black text-brand-deep dark:text-slate-100 tracking-tighter">{p.amount} {p.currency}</span>
-                         <StatusChip status={p.status} />
-                      </div>
-                      <p className="data-label lowercase">{p.bank}</p>
-                   </div>
-                </div>
-                
-                <div className="flex items-center justify-between pt-4 border-t border-slate-50 dark:border-slate-800/50">
-                   <div className="flex items-center gap-2">
-                      <div className="p-1 px-2 bg-slate-50 dark:bg-slate-900/50 rounded-md">
-                        <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{p.time}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 ml-1">
-                         {p.status === 'pending_review' ? <Search className="w-3 h-3 text-amber-500" /> : <ShieldCheck className="w-3 h-3 text-emerald-500" />}
-                         <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500">{p.status === 'pending_review' ? 'Validation requise' : 'Signaux cohérents'}</span>
-                      </div>
-                   </div>
-                   <div className="p-2 bg-brand-light dark:bg-brand-deep rounded-xl text-brand-teal dark:text-brand-cyan group-hover:bg-brand-deep dark:group-hover:bg-brand-cyan group-hover:text-brand-cyan dark:group-hover:text-brand-deep transition-all">
-                      <ChevronRight className="w-4 h-4" />
-                   </div>
-                </div>
-             </Card>
-          ))}
+          {MOCK_PAYMENTS.map((p) => {
+             const bankLogo = MOCK_BANKS.find(b => b.name === p.bank)?.logo;
+             return (
+              <Card key={p.id} onClick={() => setSelectedPayment(p.id)} className="flex flex-col gap-5 p-6 group cursor-pointer">
+                 <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center p-2.5 shadow-sm group-hover:border-brand-teal/30 transition-all">
+                       {bankLogo ? (
+                         <img src={bankLogo} alt={p.bank} className="w-full h-full object-contain" />
+                       ) : (
+                         <div className="w-10 h-10 rounded-xl bg-brand-deep dark:bg-brand-cyan flex items-center justify-center text-brand-cyan dark:text-brand-deep text-lg font-black">
+                            {p.bank[0]}
+                         </div>
+                       )}
+                    </div>
+                    <div className="flex-1">
+                       <div className="flex items-center justify-between mb-0.5">
+                          <span className="text-xl font-black text-brand-deep dark:text-slate-100 tracking-tighter">{p.amount} {p.currency}</span>
+                          <StatusChip status={p.status} />
+                       </div>
+                       <p className="data-label lowercase">{p.bank}</p>
+                    </div>
+                 </div>
+                 
+                 <div className="flex items-center justify-between pt-4 border-t border-slate-50 dark:border-slate-800/50">
+                    <div className="flex items-center gap-2">
+                       <div className="p-1 px-2 bg-slate-50 dark:bg-slate-900/50 rounded-md">
+                         <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{p.time}</span>
+                       </div>
+                       <div className="flex items-center gap-1.5 ml-1">
+                          {p.status === 'pending_review' ? <Search className="w-3 h-3 text-amber-500" /> : <ShieldCheck className="w-3 h-3 text-emerald-500" />}
+                          <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500">{p.status === 'pending_review' ? 'Validation requise' : 'Signaux cohérents'}</span>
+                       </div>
+                    </div>
+                    <div className="p-2 bg-brand-light dark:bg-brand-deep rounded-xl text-brand-teal dark:text-brand-cyan group-hover:bg-brand-deep dark:group-hover:bg-brand-cyan group-hover:text-brand-cyan dark:group-hover:text-brand-deep transition-all">
+                       <ChevronRight className="w-4 h-4" />
+                    </div>
+                 </div>
+              </Card>
+             );
+          })}
         </div>
       </div>
     </DashboardShell>
@@ -83,14 +90,19 @@ export const ReviewPayments = () => {
 
 export const PaymentDetail = ({ pId = 'p1', onBack }: { pId?: string, onBack: () => void }) => {
   const p = MOCK_PAYMENTS.find(x => x.id === pId) || MOCK_PAYMENTS[0];
+  const bankLogo = MOCK_BANKS.find(b => b.name === p.bank)?.logo;
   
   return (
     <MobileShell title="Inspection Signal" onBack={onBack}>
       <div className="flex flex-col gap-8 pb-10">
         <div className="flex flex-col items-center gap-4 mt-4">
-           <div className="w-20 h-20 bg-brand-deep rounded-3xl flex items-center justify-center text-brand-cyan shadow-xl shadow-brand-deep/20 relative">
-              <Fingerprint className="w-10 h-10" />
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-amber-500 rounded-full border-4 border-[#F8FAFC] animate-pulse" />
+           <div className="w-24 h-24 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 flex items-center justify-center p-5 shadow-premium text-brand-cyan relative group">
+              {bankLogo ? (
+                <img src={bankLogo} alt={p.bank} className="w-full h-full object-contain" />
+              ) : (
+                <Fingerprint className="w-12 h-12 text-brand-deep dark:text-brand-cyan" />
+              )}
+              <div className="absolute -top-1 -right-1 w-7 h-7 bg-amber-500 rounded-full border-4 border-[#F8FAFC] dark:border-[#020617] animate-pulse" />
            </div>
            <div className="text-center space-y-1">
               <h1 className="text-3xl font-black text-brand-deep dark:text-slate-100 tracking-tighter">{p.amount} <span className="text-brand-cyan">₽</span></h1>

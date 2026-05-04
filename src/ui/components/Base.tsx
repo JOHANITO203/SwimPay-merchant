@@ -192,3 +192,16 @@ export const Timeline = ({ items }: { items: { label: string, time: string, comp
   </div>
 );
 
+export const Input = ({ label, placeholder, type = 'text', value, onChange }: { label?: string, placeholder?: string, type?: string, value?: string, onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
+  <div className="flex flex-col gap-2">
+    {label && <span className="data-label ml-1">{label}</span>}
+    <input 
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      className="w-full px-5 py-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl text-[10px] font-black uppercase tracking-widest outline-none focus:border-brand-teal dark:focus:border-brand-cyan transition-all text-brand-deep dark:text-slate-100 shadow-sm"
+    />
+  </div>
+);
+

@@ -1,5 +1,6 @@
+import { useNavigate } from 'react-router-dom';
 import { DashboardShell } from './DashboardShell';
-import { Card, StatusChip, Logo, Button } from '@/src/ui/components/Base';
+import { Card, StatusChip, Logo, Button, MobileShell } from '@/src/ui/components/Base';
 import { ShoppingCart, Search, Filter, ChevronRight, CheckCircle2, Link as LinkIcon, Shield, Zap, Key, ClipboardList, Code, XCircle, AlertCircle, Phone, CreditCard, Banknote, HelpCircle, LogOut, ArrowUpRight, Share2, Terminal } from 'lucide-react';
 import { MOCK_ORDERS } from '@/src/mock';
 
@@ -44,8 +45,8 @@ export const OrdersList = () => (
   </DashboardShell>
 );
 
-export const ConnectedSite = () => (
-  <DashboardShell activeTab="more">
+export const ConnectedSite = ({ onBack }: { onBack?: () => void }) => {
+  const content = (
     <div className="flex flex-col gap-8 pb-20">
       <div className="space-y-2">
         <h1 className="text-2xl font-black text-brand-deep dark:text-slate-100 tracking-tight">Intégration API</h1>
@@ -135,72 +136,97 @@ export const ConnectedSite = () => (
          <Code className="w-4 h-4 group-hover:rotate-12 transition-transform" /> Documentation API
       </Button>
     </div>
-  </DashboardShell>
-);
+  );
 
-export const Settings = () => (
-  <DashboardShell activeTab="more">
-    <div className="flex flex-col gap-10 pb-20">
-      <div className="flex flex-col items-center gap-6 mt-4">
-         <div className="relative">
-            <div className="w-24 h-24 bg-brand-deep dark:bg-brand-cyan rounded-[2.5rem] flex items-center justify-center text-brand-cyan dark:text-brand-deep shadow-xl shadow-brand-deep/20 dark:shadow-brand-cyan/20 overflow-hidden">
-               <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
-               <Logo size="md" className="!gap-0" />
-            </div>
-            <div className="absolute -bottom-1 -right-1 bg-white dark:bg-slate-900 p-2 rounded-2xl shadow-premium border border-slate-100 dark:border-slate-800">
-               <Share2 className="w-4 h-4 text-brand-teal" />
-            </div>
-         </div>
-         <div className="text-center space-y-1">
-            <h2 className="text-2xl font-black text-brand-deep dark:text-slate-100 tracking-tighter">Terminal Marchand</h2>
-            <p className="data-label lowercase">UID: #7114-4466-8301</p>
-         </div>
+  if (onBack) {
+    return <MobileShell title="Sync Engine" onBack={onBack}>{content}</MobileShell>;
+  }
+
+  return (
+    <DashboardShell activeTab="more">
+      {content}
+    </DashboardShell>
+  );
+};
+
+export const Settings = () => {
+  const navigate = useNavigate();
+  
+  return (
+    <DashboardShell activeTab="more">
+      <div className="flex flex-col gap-10 pb-20">
+        <div className="flex flex-col items-center gap-6 mt-4">
+           <div className="relative">
+              <div className="w-24 h-24 bg-brand-deep dark:bg-brand-cyan rounded-[2.5rem] flex items-center justify-center text-brand-cyan dark:text-brand-deep shadow-xl shadow-brand-deep/20 dark:shadow-brand-cyan/20 overflow-hidden">
+                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
+                 <Logo size="md" className="!gap-0" />
+              </div>
+              <div className="absolute -bottom-1 -right-1 bg-white dark:bg-slate-900 p-2 rounded-2xl shadow-premium border border-slate-100 dark:border-slate-800">
+                 <Share2 className="w-4 h-4 text-brand-teal" />
+              </div>
+           </div>
+           <div className="text-center space-y-1">
+              <h2 className="text-2xl font-black text-brand-deep dark:text-slate-100 tracking-tighter">Terminal Marchand</h2>
+              <p className="data-label lowercase">UID: #7114-4466-8301</p>
+           </div>
+        </div>
+
+        <div className="flex flex-col gap-10">
+           <section className="space-y-4">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 px-1">Infrastructure</h3>
+              <div className="bg-white dark:bg-slate-900/40 rounded-4xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-soft">
+                 {[
+                   { label: 'Paramètres Android', icon: Phone, path: '/merchant/phone' },
+                   { label: 'Canaux de Paiement', icon: CreditCard, path: '/merchant/receiving-methods' },
+                   { label: 'Comptes Bancaires', icon: Banknote, path: '/merchant/banks' },
+                   { label: 'Développeur & API', icon: LinkIcon, path: '/merchant/connected-site' },
+                 ].map((item, i) => (
+                   <button 
+                    key={i} 
+                    onClick={() => navigate(item.path)}
+                    className={`w-full flex items-center gap-5 p-6 text-sm font-black text-brand-deep dark:text-slate-200 active:bg-slate-50 dark:active:bg-slate-900 transition-colors ${i !== 0 ? 'border-t border-slate-100 dark:border-slate-800' : ''} group`}
+                   >
+                      <div className="p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl text-slate-400 dark:text-slate-600 group-hover:bg-brand-light dark:group-hover:bg-brand-deep/20 group-hover:text-brand-teal transition-colors">
+                        <item.icon className="w-5 h-5" />
+                      </div>
+                      <span className="flex-1 text-left tracking-tight">{item.label}</span>
+                      <ChevronRight className="w-5 h-5 text-slate-200 dark:text-slate-700 group-hover:text-brand-deep dark:group-hover:text-brand-cyan transition-colors" />
+                   </button>
+                 ))}
+              </div>
+           </section>
+
+           <section className="space-y-4">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 px-1">Support & Sécurité</h3>
+              <div className="bg-white dark:bg-slate-900/40 rounded-4xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-soft">
+                 {[
+                   { label: 'Centre de Sécurité', icon: Shield, path: '/merchant/security' },
+                   { label: 'Aide & Assistance', icon: HelpCircle, path: '/merchant/support' },
+                   { label: 'Conditions Générales', icon: ClipboardList, path: '/merchant/terms' },
+                 ].map((item, i) => (
+                   <button 
+                    key={i} 
+                    onClick={() => navigate(item.path)}
+                    className={`w-full flex items-center gap-5 p-6 text-sm font-black text-brand-deep dark:text-slate-200 active:bg-slate-50 dark:active:bg-slate-900 transition-colors ${i !== 0 ? 'border-t border-slate-100 dark:border-slate-800' : ''} group`}
+                   >
+                      <div className="p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl text-slate-400 dark:text-slate-600 group-hover:bg-brand-light dark:group-hover:bg-brand-deep/20 group-hover:text-brand-teal transition-colors">
+                        <item.icon className="w-5 h-5" />
+                      </div>
+                      <span className="flex-1 text-left tracking-tight">{item.label}</span>
+                      <ChevronRight className="w-5 h-5 text-slate-200 dark:text-slate-700 group-hover:text-brand-deep dark:group-hover:text-brand-cyan transition-colors" />
+                   </button>
+                 ))}
+              </div>
+           </section>
+
+           <button 
+            onClick={() => navigate('/')}
+            className="flex items-center justify-center gap-3 text-red-500 font-black uppercase tracking-[0.2em] text-[10px] py-10 opacity-70 hover:opacity-100 transition-opacity"
+           >
+              <LogOut className="w-4 h-4" /> Se Déconnecter
+           </button>
+        </div>
       </div>
-
-      <div className="flex flex-col gap-10">
-         <section className="space-y-4">
-            <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 px-1">Infrastructure</h3>
-            <div className="bg-white dark:bg-slate-900/40 rounded-4xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-soft">
-               {[
-                 { label: 'Paramètres Android', icon: Phone, path: '/merchant/phone' },
-                 { label: 'Canaux de Paiement', icon: CreditCard, path: '/merchant/receiving-methods' },
-                 { label: 'Comptes Bancaires', icon: Banknote, path: '/merchant/banks' },
-                 { label: 'Développeur & API', icon: LinkIcon, path: '/merchant/connected-site' },
-               ].map((item, i) => (
-                 <button key={i} className={`w-full flex items-center gap-5 p-6 text-sm font-black text-brand-deep dark:text-slate-200 active:bg-slate-50 dark:active:bg-slate-900 transition-colors ${i !== 0 ? 'border-t border-slate-100 dark:border-slate-800' : ''} group`}>
-                    <div className="p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl text-slate-400 dark:text-slate-600 group-hover:bg-brand-light dark:group-hover:bg-brand-deep/20 group-hover:text-brand-teal transition-colors">
-                      <item.icon className="w-5 h-5" />
-                    </div>
-                    <span className="flex-1 text-left tracking-tight">{item.label}</span>
-                    <ChevronRight className="w-5 h-5 text-slate-200 dark:text-slate-700 group-hover:text-brand-deep dark:group-hover:text-brand-cyan transition-colors" />
-                 </button>
-               ))}
-            </div>
-         </section>
-
-         <section className="space-y-4">
-            <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Support & Sécurité</h3>
-            <div className="bg-white rounded-4xl border border-slate-100 overflow-hidden shadow-soft">
-               {[
-                 { label: 'Centre de Sécurité', icon: Shield },
-                 { label: 'Aide & Assistance', icon: HelpCircle },
-                 { label: 'Conditions Générales', icon: ClipboardList },
-               ].map((item, i) => (
-                 <button key={i} className={`w-full flex items-center gap-5 p-6 text-sm font-black text-brand-deep active:bg-slate-50 transition-colors ${i !== 0 ? 'border-t border-slate-100' : ''} group`}>
-                    <div className="p-2.5 bg-slate-50 rounded-xl text-slate-400 group-hover:bg-brand-light group-hover:text-brand-teal transition-colors">
-                      <item.icon className="w-5 h-5" />
-                    </div>
-                    <span className="flex-1 text-left tracking-tight">{item.label}</span>
-                    <ChevronRight className="w-5 h-5 text-slate-200 group-hover:text-brand-deep transition-colors" />
-                 </button>
-               ))}
-            </div>
-         </section>
-
-         <button className="flex items-center justify-center gap-3 text-red-500 font-black uppercase tracking-[0.2em] text-[10px] py-10 opacity-70 hover:opacity-100 transition-opacity">
-            <LogOut className="w-4 h-4" /> Se Déconnecter
-         </button>
-      </div>
-    </div>
-  </DashboardShell>
-);
+    </DashboardShell>
+  );
+};

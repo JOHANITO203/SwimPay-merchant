@@ -1,7 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 import { DashboardShell } from '../DashboardShell';
-import { Card, MetricCard, StatusChip, Button, Logo } from '@/src/ui/components/Base';
+import { Card, MetricCard, StatusChip, Button, Logo, MobileShell } from '@/src/ui/components/Base';
 import { Eye, CheckCircle2, Bell, Smartphone, ChevronRight, LayoutGrid, ArrowUpRight, TrendingUp, Calendar, Zap, Edit, Pause, Star, Smartphone as PhoneIcon, CreditCard, Shield } from 'lucide-react';
-import { MOCK_PAYMENTS } from '@/src/mock';
+import { MOCK_PAYMENTS, MOCK_BANKS } from '@/src/mock';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useTheme } from '@/src/context/ThemeContext';
 
@@ -17,6 +18,7 @@ const CHART_DATA = [
 
 export const Dashboard = () => {
   const { theme } = useTheme();
+  const navigate = useNavigate();
   
   return (
     <DashboardShell activeTab="dashboard">
@@ -32,22 +34,44 @@ export const Dashboard = () => {
         </header>
         
         {/* Hero Stat */}
-        <Card className="bg-brand-deep border-none p-8 text-white relative overflow-hidden group">
-          <div className="absolute -right-4 -top-4 w-32 h-32 bg-brand-cyan/20 blur-3xl group-hover:bg-brand-cyan/30 transition-colors" />
-          <div className="relative z-10 space-y-4">
-             <div className="flex items-center gap-2 text-brand-cyan">
-                <TrendingUp className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Activité ce mois</span>
+        <Card className="bg-brand-deep dark:bg-brand-deep/80 border-none p-8 text-white relative overflow-hidden group shadow-2xl shadow-brand-deep/30">
+          {/* Decorative mesh/bubbles for depth */}
+          <div className="absolute -right-8 -top-8 w-48 h-48 bg-brand-cyan/20 blur-[80px] rounded-full group-hover:bg-brand-cyan/30 transition-all duration-700" />
+          <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-brand-teal/10 blur-[80px] rounded-full" />
+          
+          <div className="relative z-10 space-y-6">
+             <div className="flex items-center justify-between">
+               <div className="flex items-center gap-3 text-brand-cyan">
+                  <div className="p-2 bg-white/10 rounded-xl backdrop-blur-md">
+                    <TrendingUp className="w-4 h-4" />
+                  </div>
+                  <span className="text-[11px] font-black uppercase tracking-[0.2em]">Activité Mensuelle</span>
+               </div>
+               <div className="px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/10 text-[10px] font-black uppercase tracking-widest text-white/60">
+                 Live Feed
+               </div>
              </div>
-             <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-black tracking-tighter">1 482 000</span>
-                <span className="text-lg font-bold text-white/50 tracking-tight">₽</span>
-             </div>
-             <div className="flex items-center gap-3 pt-2">
-                <div className="flex items-center gap-1 px-2 py-1 bg-white/10 rounded-lg text-[10px] font-bold text-emerald-400">
-                  <ArrowUpRight className="w-3 h-3" /> +12.5%
+
+             <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-3">
+                   <span className="text-5xl font-black tracking-tighter drop-shadow-sm">1 482 000</span>
+                   <div className="w-10 h-10 bg-brand-cyan rounded-2xl flex items-center justify-center text-brand-deep font-black shadow-lg shadow-brand-cyan/20">
+                      ₽
+                   </div>
                 </div>
-                <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">vs mois dernier</span>
+                <div className="flex items-center gap-3 mt-1">
+                  <div className="flex items-center gap-1 font-black text-emerald-400 text-xs">
+                    <ArrowUpRight className="w-4 h-4" /> +12.5%
+                  </div>
+                  <div className="w-1 h-1 rounded-full bg-white/20" />
+                  <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest text-shadow-sm">vs mois précédent</span>
+                </div>
+             </div>
+
+             <div className="flex gap-1.5 pt-2">
+                {[1,2,3,4,5,6,7].map(i => (
+                  <div key={i} className={`h-1.5 rounded-full bg-white/10 flex-1 ${i <= 5 ? 'bg-brand-cyan/40' : ''}`} />
+                ))}
              </div>
           </div>
         </Card>
@@ -113,27 +137,40 @@ export const Dashboard = () => {
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center px-1">
            <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">Paiements Récents</h3>
-           <button className="text-[10px] font-black uppercase tracking-widest text-brand-teal">Voir tout</button>
+           <button 
+            onClick={() => navigate('/merchant/reviews')}
+            className="text-[10px] font-black uppercase tracking-widest text-brand-teal"
+           >
+            Voir tout
+           </button>
         </div>
         
         <div className="flex flex-col gap-3">
-          {MOCK_PAYMENTS.map(p => (
-            <Card key={p.id} className="flex items-center gap-4 py-4 px-5 group">
-               <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center text-lg font-black text-slate-300 dark:text-slate-700 group-hover:bg-brand-light dark:group-hover:bg-brand-deep/20 group-hover:text-brand-teal transition-colors">
-                  {p.bank[0]}
-               </div>
-               <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                     <span className="font-black text-brand-deep dark:text-slate-100 tracking-tight truncate">{p.amount} {p.currency}</span>
-                     <StatusChip status={p.status} />
-                  </div>
-                  <p className="data-label mt-1 lowercase first-letter:uppercase">{p.bank} • {p.time}</p>
-               </div>
-               <div className="p-2 bg-slate-50 dark:bg-slate-900 rounded-xl text-slate-300 dark:text-slate-700 group-hover:text-brand-deep dark:group-hover:text-brand-cyan transition-colors">
-                  <ChevronRight className="w-5 h-5" />
-               </div>
-            </Card>
-          ))}
+          {MOCK_PAYMENTS.map(p => {
+            const bankLogo = MOCK_BANKS.find(b => b.name === p.bank)?.logo;
+            return (
+              <Card key={p.id} className="flex items-center gap-4 py-4 px-5 group hover:translate-x-1 transition-all">
+                 <div className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center p-2.5 shadow-sm group-hover:border-brand-teal/30 transition-colors relative">
+                    {bankLogo ? (
+                      <img src={bankLogo} alt={p.bank} className="w-full h-full object-contain" />
+                    ) : (
+                      <span className="text-lg font-black text-slate-300">{p.bank[0]}</span>
+                    )}
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900" />
+                 </div>
+                 <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                       <span className="font-black text-brand-deep dark:text-white text-lg tracking-tighter truncate">{p.amount} {p.currency}</span>
+                       <StatusChip status={p.status} />
+                    </div>
+                    <p className="data-label mt-0.5 lowercase first-letter:uppercase">{p.bank} • {p.time}</p>
+                 </div>
+                 <div className="p-2 bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-300 dark:text-slate-600 group-hover:text-brand-deep dark:group-hover:text-brand-cyan group-hover:bg-brand-light dark:group-hover:bg-brand-deep/20 transition-all">
+                    <ChevronRight className="w-5 h-5" />
+                 </div>
+              </Card>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -141,8 +178,8 @@ export const Dashboard = () => {
   );
 };
 
-export const ReceivingMethods = () => (
-  <DashboardShell activeTab="more">
+export const ReceivingMethods = ({ onBack }: { onBack?: () => void }) => {
+  const content = (
     <div className="flex flex-col gap-8 pb-10">
       <div className="space-y-2">
         <h1 className="text-2xl font-black text-brand-deep dark:text-slate-100 tracking-tight">Canaux de réception</h1>
@@ -151,16 +188,16 @@ export const ReceivingMethods = () => (
 
       <div className="grid grid-cols-2 gap-3">
         <Button variant="outline" className="py-5 px-4 flex flex-col items-center gap-2 h-auto rounded-3xl">
-          <div className="p-2 bg-brand-light rounded-xl text-brand-teal">
+          <div className="p-2 bg-brand-light dark:bg-brand-deep/20 rounded-xl text-brand-teal dark:text-brand-cyan">
             <CreditCard className="w-5 h-5" />
           </div>
-          <span className="text-[10px] font-black uppercase tracking-widest">Ajouter Carte</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-brand-deep dark:text-slate-200">Ajouter Carte</span>
         </Button>
         <Button variant="outline" className="py-5 px-4 flex flex-col items-center gap-2 h-auto rounded-3xl">
-          <div className="p-2 bg-brand-light rounded-xl text-brand-teal">
+          <div className="p-2 bg-brand-light dark:bg-brand-deep/20 rounded-xl text-brand-teal dark:text-brand-cyan">
             <PhoneIcon className="w-5 h-5" />
           </div>
-          <span className="text-[10px] font-black uppercase tracking-widest">Ajouter Mobile</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-brand-deep dark:text-slate-200">Ajouter Mobile</span>
         </Button>
       </div>
 
@@ -168,37 +205,46 @@ export const ReceivingMethods = () => (
         {[
           { type: 'card', name: 'Sberbank Platinum', id: '• • • • 4821', icon: CreditCard },
           { type: 'phone', name: 'T-Bank Business', id: '+7 * * * 45-67', icon: PhoneIcon }
-        ].map((method) => (
-          <Card key={method.id} className="flex flex-col gap-6 !p-0 overflow-hidden shadow-soft transition-colors">
-            <div className="p-6 flex items-center gap-5">
-              <div className="p-4 bg-brand-deep dark:bg-brand-cyan/10 rounded-2xl text-brand-cyan shadow-sm">
-                <method.icon className="w-6 h-6" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-black text-brand-deep dark:text-slate-100 tracking-tight">{method.name}</h3>
-                <p className="data-value text-xs text-slate-400 mt-0.5">{method.id}</p>
-              </div>
-              <div className="flex flex-col items-end gap-1">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Actif</span>
+        ].map((method) => {
+          const bankLogo = MOCK_BANKS.find(b => method.name.includes(b.name))?.logo;
+          return (
+            <Card key={method.id} className="flex flex-col gap-6 !p-0 overflow-hidden shadow-soft transition-colors">
+              <div className="p-6 flex items-center gap-5">
+                <div className="w-14 h-14 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl flex items-center justify-center p-2.5 shadow-sm">
+                  {bankLogo ? (
+                    <img src={bankLogo} alt={method.name} className="w-full h-full object-contain" />
+                  ) : (
+                    <div className="p-4 bg-brand-deep dark:bg-brand-cyan/10 rounded-2xl text-brand-cyan shadow-sm">
+                      <method.icon className="w-6 h-6" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-black text-brand-deep dark:text-slate-100 tracking-tight">{method.name}</h3>
+                  <p className="data-value text-xs text-slate-400 mt-0.5">{method.id}</p>
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Actif</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="grid grid-cols-3 border-t border-slate-50 dark:border-slate-800 bg-[#F8FAFC]/50 dark:bg-slate-900/50">
-              <button className="flex items-center justify-center gap-2 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-brand-deep dark:hover:text-slate-200 transition-colors border-r border-slate-100 dark:border-slate-800">
-                <Edit className="w-3.5 h-3.5" />
-              </button>
-              <button className="flex items-center justify-center gap-2 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-brand-deep dark:hover:text-slate-200 transition-colors border-r border-slate-100 dark:border-slate-800">
-                <Pause className="w-3.5 h-3.5" />
-              </button>
-              <button className="flex items-center justify-center gap-2 py-4 text-[10px] font-black uppercase tracking-widest text-brand-teal dark:text-brand-cyan">
-                <Star className="w-3.5 h-3.5 fill-brand-teal dark:fill-brand-cyan" />
-              </button>
-            </div>
-          </Card>
-        ))}
+              
+              <div className="grid grid-cols-3 border-t border-slate-50 dark:border-slate-800 bg-[#F8FAFC]/50 dark:bg-slate-900/50">
+                <button className="flex items-center justify-center gap-2 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-brand-deep dark:hover:text-slate-200 transition-colors border-r border-slate-100 dark:border-slate-800">
+                  <Edit className="w-3.5 h-3.5" />
+                </button>
+                <button className="flex items-center justify-center gap-2 py-4 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-brand-deep dark:hover:text-slate-200 transition-colors border-r border-slate-100 dark:border-slate-800">
+                  <Pause className="w-3.5 h-3.5" />
+                </button>
+                <button className="flex items-center justify-center gap-2 py-4 text-[10px] font-black uppercase tracking-widest text-brand-teal dark:text-brand-cyan">
+                  <Star className="w-3.5 h-3.5 fill-brand-teal dark:fill-brand-cyan" />
+                </button>
+              </div>
+            </Card>
+          );
+        })}
       </div>
 
       <div className="p-6 bg-slate-900 rounded-[2rem] text-white relative overflow-hidden flex items-center gap-6">
@@ -211,5 +257,15 @@ export const ReceivingMethods = () => (
          </div>
       </div>
     </div>
-  </DashboardShell>
-);
+  );
+
+  if (onBack) {
+    return <MobileShell title="Canaux" onBack={onBack}>{content}</MobileShell>;
+  }
+
+  return (
+    <DashboardShell activeTab="more">
+      {content}
+    </DashboardShell>
+  );
+};

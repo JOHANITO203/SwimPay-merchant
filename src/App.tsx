@@ -13,6 +13,7 @@ import { Welcome, ConnectPhone, ChooseBanks, AddReceivingMethod, VerifyConfig, F
 import { Dashboard, ReceivingMethods } from './features/merchant/dashboard/Screens';
 import { ReviewPayments, PaymentDetail } from './features/merchant/reviews/Screens';
 import { OrdersList, ConnectedSite, Settings } from './features/merchant/DashboardExtended';
+import { PhoneSettings, BankAccounts, SecurityCenter, HelpSupport, Conditions } from './features/merchant/settings/Screens';
 
 import { Logo, Button } from './ui/components/Base';
 
@@ -69,9 +70,15 @@ export default function App() {
           <Route path="/merchant/reviews" element={<ReviewPayments />} />
           <Route path="/merchant/reviews/:id" element={<MerchantPaymentDetailWrapper />} />
           <Route path="/merchant/orders" element={<OrdersList />} />
-          <Route path="/merchant/receiving-methods" element={<ReceivingMethods />} />
-          <Route path="/merchant/connected-site" element={<ConnectedSite />} />
+          <Route path="/merchant/receiving-methods" element={<SettingsDetailWrapper component={ReceivingMethods} />} />
+          <Route path="/merchant/connected-site" element={<SettingsDetailWrapper component={ConnectedSite} />} />
           <Route path="/merchant/settings" element={<Settings />} />
+          
+          <Route path="/merchant/phone" element={<SettingsDetailWrapper component={PhoneSettings} />} />
+          <Route path="/merchant/banks" element={<SettingsDetailWrapper component={BankAccounts} />} />
+          <Route path="/merchant/security" element={<SettingsDetailWrapper component={SecurityCenter} />} />
+          <Route path="/merchant/support" element={<SettingsDetailWrapper component={HelpSupport} />} />
+          <Route path="/merchant/terms" element={<SettingsDetailWrapper component={Conditions} />} />
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
@@ -108,5 +115,10 @@ const OnboardingFlow = () => {
 const MerchantPaymentDetailWrapper = () => {
   const navigate = useNavigate();
   return <PaymentDetail onBack={() => navigate('/merchant/reviews')} />;
+}
+
+const SettingsDetailWrapper = ({ component: Component }: { component: any }) => {
+  const navigate = useNavigate();
+  return <Component onBack={() => navigate('/merchant/settings')} />;
 }
 
