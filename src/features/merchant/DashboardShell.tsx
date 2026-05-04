@@ -1,12 +1,55 @@
 import { ReactNode } from 'react';
 import { Home, ClipboardList, ShoppingCart, MoreHorizontal, Sun, Moon } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Logo } from '@/src/ui/components/Base';
 import { motion } from 'motion/react';
 import { useTheme } from '@/src/context/ThemeContext';
+import { 
+  Box, 
+  AppBar, 
+  Toolbar, 
+  IconButton, 
+  Avatar, 
+  Badge, 
+  BottomNavigation, 
+  BottomNavigationAction, 
+  Paper,
+  styled,
+  Container
+} from '@mui/material';
+
+const StyledBottomNavigationAction = styled(BottomNavigationAction)(({ theme }) => ({
+  color: theme.palette.text.secondary,
+  '&.Mui-selected': {
+    color: theme.palette.primary.main,
+    '& .MuiSvgIcon-root': {
+      color: theme.palette.primary.main,
+    },
+  },
+  '& .MuiBottomNavigationAction-label': {
+    fontSize: '0.625rem',
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+    marginTop: '4px',
+  },
+}));
+
+const ActiveIndicator = styled(motion.div)(({ theme }) => ({
+  position: 'absolute',
+  top: 0,
+  width: '48px',
+  height: '28px',
+  borderRadius: '14px',
+  backgroundColor: theme.palette.primary.light,
+  zIndex: -1,
+}));
 
 export const DashboardShell = ({ children, activeTab }: { children: ReactNode, activeTab: string }) => {
   const { theme, toggleTheme } = useTheme();
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const tabs = [
     { id: 'dashboard', label: 'Home', icon: Home, path: '/merchant/dashboard' },
     { id: 'reviews', label: 'Revues', icon: ClipboardList, path: '/merchant/reviews' },
@@ -15,54 +58,59 @@ export const DashboardShell = ({ children, activeTab }: { children: ReactNode, a
   ];
 
   return (
-    <div className="flex justify-center bg-slate-100 dark:bg-slate-950 min-h-screen transition-colors duration-300">
-      <div className="relative w-full max-w-md bg-[#F8FAFC] dark:bg-[#020617] min-h-screen flex flex-col overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.1)] gradient-mesh transition-colors duration-300">
-        <header className="px-6 pt-12 pb-4 flex items-center justify-between sticky top-0 z-20 bg-[#F8FAFC]/80 dark:bg-[#020617]/80 backdrop-blur-xl border-b border-white/5 transition-colors duration-300">
-          <Logo size="sm" />
-          <div className="flex items-center gap-3">
-             <button 
-               onClick={toggleTheme}
-               className="w-8 h-8 rounded-full bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-brand-cyan transition-all"
-             >
-               {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4 text-amber-400" />}
-             </button>
-             <div className="w-8 h-8 rounded-full bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm flex items-center justify-center relative">
-                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full absolute top-0 right-0 border-2 border-white dark:border-slate-900" />
-                <span className="text-[10px] font-black text-brand-deep dark:text-slate-200">JD</span>
-             </div>
-          </div>
-        </header>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: 'background.default' }}>
+      <Box sx={{ flex: 1, position: 'relative', maxWidth: '450px', mx: 'auto', width: '100%', bgcolor: 'background.paper', boxShadow: 3 }}>
+        
+        <AppBar position="sticky" elevation={0} sx={{ bgcolor: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(12px)', borderBottom: '1px solid', borderColor: 'divider', color: 'text.primary' }}>
+          <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', px: 2 }}>
+            <Logo size="sm" />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <IconButton onClick={toggleTheme} size="small" sx={{ border: '1px solid', borderColor: 'divider' }}>
+                {theme === 'light' ? <Moon size={18} /> : <Sun size={18} style={{ color: '#f59e0b' }} />}
+              </IconButton>
+              <Badge variant="dot" color="success" overlap="circular" anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+                <Avatar sx={{ width: 32, height: 32, fontSize: '0.75rem', fontWeight: 800, bgcolor: 'primary.main' }}>JD</Avatar>
+              </Badge>
+            </Box>
+          </Toolbar>
+        </AppBar>
 
-        <main className="flex-1 flex flex-col overflow-y-auto px-6 py-4 pb-32 scrollbar-hide">
+        <Box component="main" sx={{ p: 3, pb: 12 }}>
           {children}
-        </main>
+        </Box>
 
-        <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-50 dark:border-slate-800/50 flex items-center justify-around py-4 pb-8 px-4 z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] rounded-t-[2.5rem] transition-colors duration-300">
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
-              <NavLink 
-                key={tab.id} 
-                to={tab.path}
-                className="flex flex-col items-center gap-1.5 relative group"
-              >
-                <div className={`p-2 rounded-2xl transition-all duration-500 flex items-center justify-center ${isActive ? 'bg-brand-deep dark:bg-brand-cyan text-brand-cyan dark:text-brand-deep shadow-lg shadow-brand-deep/20' : 'text-slate-400 dark:text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800'}`}>
-                  <tab.icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5px]' : 'stroke-[2px]'}`} />
-                </div>
-                <span className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-300 ${isActive ? 'text-brand-deep dark:text-slate-200' : 'text-slate-300 dark:text-slate-700 group-hover:text-slate-500 dark:group-hover:text-slate-400'}`}>
-                  {tab.label}
-                </span>
-                {isActive && (
-                  <motion.div 
-                    layoutId="activeTab"
-                    className="absolute -top-1 w-1 h-1 bg-brand-cyan rounded-full"
-                  />
-                )}
-              </NavLink>
-            );
-          })}
-        </nav>
-      </div>
-    </div>
+        <Paper sx={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: '450px', zIndex: 1000 }} elevation={3}>
+          <BottomNavigation
+            showLabels
+            value={tabs.findIndex(t => t.id === activeTab)}
+            onChange={(_, newValue) => {
+              navigate(tabs[newValue].path);
+            }}
+            sx={{ height: 80, pb: 2, pt: 1, borderRadius: '24px 24px 0 0' }}
+          >
+            {tabs.map((tab, index) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <StyledBottomNavigationAction
+                  key={tab.id}
+                  label={tab.label}
+                  icon={
+                    <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {isActive && (
+                        <ActiveIndicator 
+                          layoutId="nav-pill"
+                          transition={{ type: 'spring', bounce: 0.25, duration: 0.5 }}
+                        />
+                      )}
+                      <tab.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+                    </Box>
+                  }
+                />
+              );
+            })}
+          </BottomNavigation>
+        </Paper>
+      </Box>
+    </Box>
   );
 };

@@ -51,15 +51,20 @@ const Landing = () => {
   );
 }
 
-import { ThemeProvider } from './context/ThemeContext';
+import { ThemeProvider as CustomThemeProvider } from './context/ThemeContext';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { googleTheme } from './theme';
 import { Card } from './ui/components/Base';
 import { ShoppingCart } from 'lucide-react';
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <BrowserRouter>
-        <Routes>
+    <MuiThemeProvider theme={googleTheme}>
+      <CssBaseline />
+      <CustomThemeProvider>
+        <BrowserRouter>
+          <Routes>
           <Route path="/" element={<Landing />} />
 
           {/* Merchant Onboarding Flow */}
@@ -82,8 +87,9 @@ export default function App() {
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
+        </BrowserRouter>
+      </CustomThemeProvider>
+    </MuiThemeProvider>
   );
 }
 

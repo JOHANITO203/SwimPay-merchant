@@ -1,204 +1,322 @@
-import { MobileShell, Card, Button, Input, CopyField } from '@/src/ui/components/Base';
-import { Smartphone, Shield, HelpCircle, FileText, Bell, Lock, Fingerprint, Database, Landmark, CreditCard, ChevronRight, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { MOCK_BANKS } from '@/src/mock';
+import {
+  Box,
+  Typography,
+  Card as MuiCard,
+  Grid,
+  IconButton,
+  Avatar,
+  Chip,
+  Button as MuiButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Paper,
+  alpha,
+  useTheme as useMuiTheme,
+  AppBar,
+  Toolbar,
+  Divider,
+  Switch,
+} from '@mui/material';
+import {
+  Smartphone,
+  Shield,
+  Help,
+  Description,
+  ArrowBackIosNew,
+  NotificationsActive,
+  BatteryChargingFull,
+  AutoMode,
+  AccountBalance,
+  Add,
+  ChevronRight,
+  Lock,
+  Fingerprint,
+  Article,
+  Warning,
+  Send,
+  Storage,
+  Lan
+} from '@mui/icons-material';
 
-// --- INFRASTRUCTURE SCREENS ---
+// --- WRAPPER FOR UNDER-DASHBOARD SCREENS ---
+const SettingsPageShell = ({ title, onBack, children }: any) => (
+  <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', width: '100%', maxWidth: '450px', mx: 'auto' }}>
+    <AppBar position="sticky" elevation={0} sx={{ bgcolor: 'background.paper', borderBottom: '1px solid', borderColor: 'divider', color: 'text.primary' }}>
+      <Toolbar sx={{ gap: 2 }}>
+        <IconButton onClick={onBack} size="small">
+          <ArrowBackIosNew sx={{ fontSize: 18 }} />
+        </IconButton>
+        <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>{title}</Typography>
+      </Toolbar>
+    </AppBar>
+    <Box sx={{ p: 3 }}>{children}</Box>
+  </Box>
+);
 
-export const PhoneSettings = ({ onBack }: { onBack: () => void }) => (
-  <MobileShell title="Paramètres Android" onBack={onBack}>
-    <div className="flex flex-col gap-8 pb-10">
-      <div className="flex flex-col items-center gap-4 mt-4">
-        <div className="w-20 h-20 bg-brand-deep dark:bg-brand-cyan rounded-3xl flex items-center justify-center text-brand-cyan dark:text-brand-deep shadow-xl shadow-brand-deep/20">
-          <Smartphone className="w-10 h-10" />
-        </div>
-        <div className="text-center space-y-1">
-          <h1 className="text-2xl font-black text-brand-deep dark:text-white tracking-tighter">Sync Agent v2.4</h1>
-          <p className="data-label">Identifiant Terminal: #TERM-8821</p>
-        </div>
-      </div>
+export const PhoneSettings = ({ onBack }: { onBack: () => void }) => {
+  const muiTheme = useMuiTheme();
+  return (
+    <SettingsPageShell title="Paramètres Android" onBack={onBack}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, pt: 2 }}>
+          <Avatar 
+            sx={{ 
+              width: 80, 
+              height: 80, 
+              bgcolor: 'primary.main', 
+              borderRadius: 5,
+              boxShadow: `0 8px 24px ${alpha(muiTheme.palette.primary.main, 0.2)}`
+            }}
+          >
+            <Smartphone sx={{ fontSize: 40 }} />
+          </Avatar>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h5" sx={{ fontWeight: 800 }}>Sync Agent v2.4</Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, letterSpacing: '0.1em' }}>ID: #TERM-8821</Typography>
+          </Box>
+        </Box>
 
-      <section className="space-y-4">
-        <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">État du Service</h3>
-        <Card className="flex items-center justify-between p-5 border-emerald-100 dark:border-emerald-900/30 bg-emerald-50/30 dark:bg-emerald-900/10">
-          <div className="flex items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-sm font-black text-brand-deep dark:text-emerald-400">Écoute active des notifications</span>
-          </div>
-          <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-widest">Connecté</span>
-        </Card>
-      </section>
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            p: 2, 
+            borderRadius: 4, 
+            bgcolor: alpha('#4ade80', 0.1), 
+            border: '1px solid', 
+            borderColor: alpha('#4ade80', 0.2),
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#22c55e', animation: 'pulse 2s infinite' }} />
+            <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#166534' }}>Service Actif</Typography>
+          </Box>
+          <Chip label="Connecté" size="small" sx={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '0.6rem', bgcolor: '#22c55e', color: 'white' }} />
+        </Paper>
 
-      <section className="space-y-4">
-        <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Configuration</h3>
-        <div className="space-y-3">
-          {[
-            { label: 'Lecture SMS bancaires', icon: Bell, status: 'Activé' },
-            { label: 'Optimisation batterie', icon: Smartphone, status: 'Ignorer' },
-            { label: 'Démarrage automatique', icon: Database, status: 'Activé' },
-          ].map((item, i) => (
-            <Card key={i} className="flex items-center justify-between p-5">
-              <div className="flex items-center gap-4">
-                <div className="p-2 bg-slate-50 dark:bg-slate-900 rounded-xl text-slate-400">
-                  <item.icon className="w-4 h-4" />
-                </div>
-                <span className="text-sm font-black text-brand-deep dark:text-slate-200">{item.label}</span>
-              </div>
-              <div className="w-10 h-6 bg-brand-deep dark:bg-brand-cyan/20 rounded-full flex items-center px-1 shadow-inner">
-                <div className="w-4 h-4 bg-brand-cyan dark:bg-brand-cyan rounded-full translate-x-4 shadow-sm" />
-              </div>
-            </Card>
+        <Box>
+          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', ml: 1, mb: 1.5, display: 'block' }}>Config Agent</Typography>
+          <Paper sx={{ borderRadius: 6, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }} elevation={0}>
+             <List disablePadding>
+                {[
+                  { label: 'Lecture SMS', icon: NotificationsActive, active: true },
+                  { label: 'Gestion Énergie', icon: BatteryChargingFull, active: false },
+                  { label: 'Auto-Démarrage', icon: AutoMode, active: true },
+                ].map((item, i) => (
+                  <Box key={i}>
+                    <ListItem sx={{ py: 2, px: 2.5 }}>
+                      <ListItemAvatar>
+                        <Avatar variant="rounded" sx={{ bgcolor: alpha(muiTheme.palette.primary.main, 0.05), color: 'primary.main', width: 40, height: 40 }}>
+                           <item.icon sx={{ fontSize: 20 }} />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText primary={<Typography sx={{ fontWeight: 700 }}>{item.label}</Typography>} />
+                      <Switch defaultChecked={item.active} size="small" />
+                    </ListItem>
+                    {i < 2 && <Divider sx={{ ml: 8 }} />}
+                  </Box>
+                ))}
+             </List>
+          </Paper>
+        </Box>
+
+        <MuiButton fullWidth color="error" variant="text" sx={{ py: 2, fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.1em' }}>Réinitialiser le terminal</MuiButton>
+      </Box>
+    </SettingsPageShell>
+  );
+};
+
+export const BankAccounts = ({ onBack }: { onBack: () => void }) => {
+  const muiTheme = useMuiTheme();
+  return (
+    <SettingsPageShell title="Comptes Bancaires" onBack={onBack}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <Box>
+          <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700 }}>Sources Connectées</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontWeight: 500 }}>
+             Les comptes bancaires dont les notifications sont interceptées par le terminal.
+          </Typography>
+        </Box>
+
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {MOCK_BANKS.slice(0, 3).map((bank, i) => (
+            <MuiCard key={bank.id} sx={{ borderRadius: 5, border: '1px solid', borderColor: 'divider' }} elevation={0}>
+              <Box sx={{ p: 2.5, display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Avatar 
+                   variant="rounded" 
+                   src={bank.logo} 
+                   sx={{ width: 56, height: 56, p: 1, bgcolor: 'background.default', border: '1px solid', borderColor: 'divider' }}
+                >
+                  <AccountBalance />
+                </Avatar>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>{bank.name}</Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>Vérification SBP Active</Typography>
+                </Box>
+                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: i === 2 ? 'warning.main' : 'success.main' }} />
+              </Box>
+            </MuiCard>
           ))}
-        </div>
-      </section>
+        </Box>
 
-      <Button variant="outline" className="mt-4 border-red-100 text-red-500">
-        Réinitialiser le terminal
-      </Button>
-    </div>
-  </MobileShell>
-);
+        <MuiButton 
+          fullWidth 
+          variant="contained" 
+          startIcon={<Add />} 
+          sx={{ py: 2, borderRadius: 4, fontWeight: 700 }}
+        >
+          Lier un compte bancaire
+        </MuiButton>
+      </Box>
+    </SettingsPageShell>
+  );
+};
 
-export const BankAccounts = ({ onBack }: { onBack: () => void }) => (
-  <MobileShell title="Comptes Bancaires" onBack={onBack}>
-    <div className="flex flex-col gap-8 pb-10">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-black text-brand-deep dark:text-white tracking-tight">Sources Connectées</h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Les comptes bankaires dont les notifications sont interceptées.</p>
-      </div>
+export const SecurityCenter = ({ onBack }: { onBack: () => void }) => {
+  const muiTheme = useMuiTheme();
+  return (
+    <SettingsPageShell title="Sécurité" onBack={onBack}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            p: 4, 
+            borderRadius: 6, 
+            bgcolor: 'primary.main', 
+            color: 'white', 
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 2,
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          <Box sx={{ position: 'absolute', top: -40, right: -40, width: 140, height: 140, bgcolor: 'white', opacity: 0.05, borderRadius: '50%' }} />
+          <Avatar sx={{ width: 64, height: 64, bgcolor: alpha('#fff', 0.15), color: 'white' }}>
+            <Shield sx={{ fontSize: 32 }} />
+          </Avatar>
+          <Box>
+            <Typography variant="h6" sx={{ fontWeight: 800 }}>Coffre-Fort Chiffré</Typography>
+            <Typography variant="caption" sx={{ opacity: 0.6, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Signal Intègre • HMAC-SHA256</Typography>
+          </Box>
+        </Paper>
 
-      <div className="flex flex-col gap-4">
-        {MOCK_BANKS.slice(0, 3).map((bank, i) => (
-          <Card key={bank.id} className="flex items-center gap-5 p-5 group">
-            <div className="w-14 h-14 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl flex items-center justify-center p-3 shadow-sm">
-               <img src={bank.logo} alt={bank.name} className="w-full h-full object-contain" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-black text-brand-deep dark:text-white tracking-tight">{bank.name}</h3>
-              <p className="data-label mt-1">Vérification SBP • Active</p>
-            </div>
-            <div className={`w-2 h-2 rounded-full ${i === 2 ? 'bg-amber-500' : 'bg-emerald-500'}`} />
-          </Card>
-        ))}
-      </div>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+           {[
+             { label: 'Accès Biométrique', desc: 'FaceID / Empreinte requis.', icon: Fingerprint, status: 'Actif', color: '#146c2e' },
+             { label: 'Rotation des Clés', desc: 'Renouvellement auto.', icon: Lock, status: '30j', color: muiTheme.palette.primary.main },
+             { label: 'Sessions Actives', desc: 'Gérez vos terminaux.', icon: Lan, status: '1', color: 'text.secondary' },
+           ].map((item, i) => (
+             <MuiCard key={i} sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider' }} elevation={0}>
+               <Box sx={{ p: 2.5, display: 'flex', alignItems: 'center', gap: 2.5 }}>
+                 <Avatar variant="rounded" sx={{ bgcolor: alpha(item.color as string, 0.05), color: item.color as string }}>
+                    <item.icon />
+                 </Avatar>
+                 <Box sx={{ flex: 1 }}>
+                   <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>{item.label}</Typography>
+                   <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>{item.desc}</Typography>
+                 </Box>
+                 <Typography variant="caption" sx={{ fontWeight: 800, color: 'text.secondary' }}>{item.status}</Typography>
+               </Box>
+             </MuiCard>
+           ))}
+        </Box>
+      </Box>
+    </SettingsPageShell>
+  );
+};
 
-      <Button variant="primary" className="flex items-center justify-center gap-2">
-        <Landmark className="w-4 h-4" /> Ajouter une banque
-      </Button>
-    </div>
-  </MobileShell>
-);
+export const HelpSupport = ({ onBack }: { onBack: () => void }) => {
+  const muiTheme = useMuiTheme();
+  return (
+    <SettingsPageShell title="Support" onBack={onBack}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <Box>
+          <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700 }}>Assistance</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontWeight: 500 }}>
+             Consultez nos ressources ou parlez à un expert technique.
+          </Typography>
+        </Box>
 
-// --- SUPPORT & SECURITY SCREENS ---
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {[
+            { label: 'Base de connaissances', icon: Article, desc: 'Guides et tutos.' },
+            { label: 'Latence Réseau', icon: Storage, desc: 'État des passerelles.' },
+            { label: 'Historique Tickets', icon: Send, desc: 'Vos demandes.' },
+          ].map((item, i) => (
+            <MuiCard key={i} sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider' }} elevation={0}>
+               <MuiButton fullWidth sx={{ p: 2.5, justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', gap: 2.5 }}>
+                  <Avatar sx={{ bgcolor: alpha(muiTheme.palette.primary.main, 0.05), color: 'primary.main' }}>
+                    <item.icon />
+                  </Avatar>
+                  <Box sx={{ flex: 1, textAlign: 'left' }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>{item.label}</Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>{item.desc}</Typography>
+                  </Box>
+                  <ChevronRight sx={{ opacity: 0.2 }} />
+               </MuiButton>
+            </MuiCard>
+          ))}
+        </Box>
 
-export const SecurityCenter = ({ onBack }: { onBack: () => void }) => (
-  <MobileShell title="Centre de Sécurité" onBack={onBack}>
-    <div className="flex flex-col gap-8 pb-10">
-      <div className="p-8 bg-brand-deep dark:bg-brand-deep/80 rounded-[2.5rem] flex flex-col items-center text-center gap-4 border-none shadow-2xl shadow-brand-deep/20">
-         <div className="w-16 h-16 bg-brand-cyan/20 rounded-[1.5rem] flex items-center justify-center text-brand-cyan">
-            <Shield className="w-8 h-8" />
-         </div>
-         <div className="space-y-1">
-            <h2 className="text-xl font-black text-white tracking-tight">Protection Haute-Fidélité</h2>
-            <p className="text-[10px] text-white/50 font-black uppercase tracking-[0.2em]">Dernière analyse: Il y a 12m</p>
-         </div>
-      </div>
+        <Paper elevation={0} sx={{ p: 4, borderRadius: 6, bgcolor: alpha(muiTheme.palette.text.primary, 0.03), textAlign: 'center', gap: 2, display: 'flex', flexDirection: 'column' }}>
+           <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>Besoin d'aide immédiate ?</Typography>
+           <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>
+              Nos techniciens répondent en moins de 15 minutes sur notre canal Telegram officiel.
+           </Typography>
+           <MuiButton variant="outlined" sx={{ mt: 1, borderRadius: 3, fontWeight: 700 }}>Contacter sur Telegram</MuiButton>
+        </Paper>
+      </Box>
+    </SettingsPageShell>
+  );
+};
 
-      <div className="grid grid-cols-1 gap-4">
-        {[
-          { label: 'Chiffrement E2EE', desc: 'Signaux signés par HMAC-SHA256.', icon: Lock, status: 'Actif', color: 'text-brand-cyan' },
-          { label: 'Accès Biométrique', desc: 'FaceID / Empreinte digitale requis.', icon: Fingerprint, status: 'Activé', color: 'text-emerald-500' },
-          { label: 'Logs d\'audit', desc: 'Historique des accès au terminal.', icon: FileText, status: 'Voir', color: 'text-slate-400' },
-        ].map((item, i) => (
-          <Card key={i} className="flex items-center gap-5 p-5 group">
-            <div className={`p-3 bg-slate-50 dark:bg-slate-900 rounded-2xl ${item.color}`}>
-              <item.icon className="w-5 h-5" />
-            </div>
-            <div className="flex-1">
-              <h4 className="text-sm font-black text-brand-deep dark:text-white tracking-tight">{item.label}</h4>
-              <p className="data-label text-[9px] mt-0.5">{item.desc}</p>
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{item.status}</span>
-          </Card>
-        ))}
-      </div>
-    </div>
-  </MobileShell>
-);
+export const Conditions = ({ onBack }: { onBack: () => void }) => {
+  const muiTheme = useMuiTheme();
+  return (
+    <SettingsPageShell title="Légal" onBack={onBack}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <Box>
+          <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 700 }}>Documents Légaux</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontWeight: 500 }}>
+             Dernière mise à jour : 01 Janvier 2026.
+          </Typography>
+        </Box>
 
-export const HelpSupport = ({ onBack }: { onBack: () => void }) => (
-  <MobileShell title="Aide & Assistance" onBack={onBack}>
-    <div className="flex flex-col gap-8 pb-10">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-black text-brand-deep dark:text-white tracking-tight">Comment pouvons-nous vous aider ?</h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Consultez nos ressources ou contactez nos experts.</p>
-      </div>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+           {[
+             'Conditions Générales',
+             'Politique de Confidentialité',
+             'Traitement des Données',
+             'Mentions Légales'
+           ].map((label, i) => (
+             <MuiCard key={i} sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider' }} elevation={0}>
+                <MuiButton fullWidth sx={{ p: 3, justifyContent: 'flex-start', textTransform: 'none', color: 'text.primary', gap: 3 }}>
+                   <Avatar variant="rounded" sx={{ bgcolor: alpha(muiTheme.palette.text.secondary, 0.05), color: 'text.secondary' }}>
+                      <Article />
+                   </Avatar>
+                   <Box sx={{ flex: 1, textAlign: 'left' }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>{label}</Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>PDF • 2.4 MB</Typography>
+                   </Box>
+                   <ChevronRight sx={{ opacity: 0.2 }} />
+                </MuiButton>
+             </MuiCard>
+           ))}
+        </Box>
 
-      <div className="grid grid-cols-1 gap-3">
-        {[
-          { label: 'Base de connaissances', desc: 'Guides complets sur le Sync Engine.', icon: HelpCircle },
-          { label: 'Statut du réseau', desc: 'Vérifiez la latence des webhooks.', icon: Database },
-          { label: 'Envoyer un ticket', desc: 'Réponse moyenne en 24h.', icon: FileText },
-        ].map((item, i) => (
-          <Card key={i} className="flex items-center gap-5 p-5 group active:scale-[0.98] transition-all">
-            <div className="p-3 bg-brand-light dark:bg-brand-deep/20 rounded-2xl text-brand-teal dark:text-brand-cyan transition-colors">
-              <item.icon className="w-5 h-5" />
-            </div>
-            <div className="flex-1">
-              <h4 className="text-sm font-black text-brand-deep dark:text-white tracking-tight">{item.label}</h4>
-              <p className="data-label text-[9px] mt-0.5">{item.desc}</p>
-            </div>
-            <ChevronRight className="w-4 h-4 text-slate-300" />
-          </Card>
-        ))}
-      </div>
-
-      <Card className="bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 p-6 space-y-4">
-        <div className="flex items-center gap-3 text-brand-deep dark:text-white">
-           <AlertCircle className="w-5 h-5 text-brand-teal" />
-           <span className="font-black text-sm tracking-tight">Besoin d'aide immédiate ?</span>
-        </div>
-        <p className="text-xs text-slate-500 font-medium leading-relaxed">
-          Nos techniciens sont disponibles via Telegram pour toute urgence liée à l'intégration de votre terminal marchand.
-        </p>
-        <Button variant="secondary" className="w-full">Ouvrir le Chat Telegram</Button>
-      </Card>
-    </div>
-  </MobileShell>
-);
-
-export const Conditions = ({ onBack }: { onBack: () => void }) => (
-  <MobileShell title="Légal" onBack={onBack}>
-    <div className="flex flex-col gap-8 pb-10">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-black text-brand-deep dark:text-white tracking-tight">Documentations Légales</h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Dernière mise à jour: 01 Janv 2026</p>
-      </div>
-
-      <div className="flex flex-col gap-4">
-        {[
-          { label: 'Conditions Générales de Vente', items: 12 },
-          { label: 'Politique de Confidentialité', items: 8 },
-          { label: 'Traitement des Données (RGPD)', items: 5 },
-          { label: 'Utilisation des Cookies', items: 3 },
-        ].map((doc, i) => (
-          <Card key={i} className="flex items-center gap-5 p-6 group">
-            <div className="w-12 h-12 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-brand-light dark:group-hover:bg-brand-deep/20 group-hover:text-brand-teal transition-all">
-              <FileText className="w-6 h-6" />
-            </div>
-            <div className="flex-1">
-               <h4 className="text-sm font-black text-brand-deep dark:text-white tracking-tight">{doc.label}</h4>
-               <p className="data-label text-[9px] mt-1">{doc.items} sections • PDF disponible</p>
-            </div>
-            <div className="p-2 bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-300 group-hover:text-brand-deep dark:group-hover:text-white transition-all">
-               <ChevronRight className="w-4 h-4" />
-            </div>
-          </Card>
-        ))}
-      </div>
-      
-      <p className="text-[10px] text-center text-slate-400 font-bold px-8 leading-relaxed">
-        En utilisant le terminal SwimPay, vous acceptez tacitement l'ensemble des clauses mentionnées ci-dessus.
-      </p>
-    </div>
-  </MobileShell>
-);
+        <Typography variant="caption" sx={{ textAlign: 'center', color: 'text.secondary', fontWeight: 500, px: 4, mt: 2 }}>
+           L'utilisation de ce terminal implique l'acceptation sans réserve des clauses citées ci-dessus.
+        </Typography>
+      </Box>
+    </SettingsPageShell>
+  );
+};
