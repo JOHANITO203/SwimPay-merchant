@@ -1,0 +1,6 @@
+{
+  "name": "SwimPay Merchant",
+  "description": "Android fintech app for merchants: payment detection, business analytics, and settlement management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
